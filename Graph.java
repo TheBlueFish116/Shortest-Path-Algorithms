@@ -11,7 +11,7 @@ public class Graph extends JFrame {
         vertexGeneration(numOfVertices);
         EdgeGeneration();
         graphics = new MyGraphics(vertices, edges);
-        this.setSize(510, 510);
+        this.setSize(1000, 1000);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.add(graphics);
@@ -22,13 +22,20 @@ public class Graph extends JFrame {
         vertices = new Vertex[numOfVertices];
         Random rand = new Random();
         for (int i = 0; i < numOfVertices; i++) {
-            int x = rand.nextInt(480) + 10;
-            int y = rand.nextInt(480) + 10;
-            vertices[i] = new Vertex(x, y);
+//            if(i == 0){
+//                vertices[i] = new Vertex(20, 20, i);
+//            }else if(i == 1) {
+//                vertices[i] = new Vertex(20, 30, i);
+//            }else{
+                    int x = rand.nextInt(480) + 10;
+                    int y = rand.nextInt(480) + 10;
+                    vertices[i] = new Vertex(x, y, i);
+
+//            }
         }
     }
 
-    //This function makes sure that the graph has the most edges it could have without two edges ever crossing each other.
+    //This function makes sure that the graph has the most edges it can without two edges ever crossing each other.
     //It does this by sorting every edge by distance then adding the shortest edges to the graph if they dont intersect any
     //previous edges.
     public void EdgeGeneration(){
@@ -37,45 +44,53 @@ public class Graph extends JFrame {
         for(int vertexOne=0; vertexOne<vertices.length; vertexOne++){
             for(int vertexTwo=0; vertexTwo<vertices.length; vertexTwo++){
                 if(vertexOne != vertexTwo) {     //vertices[vertexOne].x
-                    double distance = (Math.pow((vertices[vertexOne].getX() - vertices[vertexTwo].getX()), 2) + Math.pow(vertices[vertexOne].getY() - vertices[vertexTwo].getY(), 2));
+                    double distance = Math.sqrt(Math.pow((vertices[vertexOne].getX() - vertices[vertexTwo].getX()), 2) + Math.pow(vertices[vertexOne].getY() - vertices[vertexTwo].getY(), 2));
                     double[] edge = {vertexOne, vertexTwo, distance};
                     edgeNum++;
                     insertionSort(edge, possibleEdges, edgeNum);
                 }
             }
         }
+        fixArray(possibleEdges);
         List<Edge> listOfEdges = new ArrayList<Edge>();
+        int debug = 0;
         for(int i=0; i<possibleEdges.length; i += 2){
+
+
+
             boolean possibleEdge = true;
             double x1 = vertices[(int)possibleEdges[i][0]].getX();
             double x2 = vertices[(int)possibleEdges[i][1]].getX();
             double y1 = vertices[(int)possibleEdges[i][0]].getY();
             double y2 = vertices[(int)possibleEdges[i][1]].getY();
-            double slope = (y2-y1) / (x2-x1);
-            possibleEdges[i][2] = slope;
-            for(int j = 0; j < listOfEdges.size(); j++){
-                int existingx1 = listOfEdges.get(j).getEndpoint1().getX();
-                int existingx2 = listOfEdges.get(j).getEndpoint2().getX();
-                double b1 = y1 - slope * x1;
-                double b2 = (double)listOfEdges.get(j).getEndpoint1().getY() - listOfEdges.get(j).getSlope() * (double)listOfEdges.get(j).getEndpoint1().getX();
-                double xIntercept = (b2 - b1)/(slope - listOfEdges.get(j).getSlope());
-                if(xIntercept <= Math.min(x1, x2) || xIntercept >= Math.max(x1, x2)){
+            Edge temp = new Edge(vertices[(int)possibleEdges[i][0]], vertices[(int)possibleEdges[i][1]]);
+            for(Edge edge: listOfEdges){
+                double intersection[] = edgeIntersection(edge, temp);
+                int existingx1 = edge.getEndpoint1().getX();
+                int existingx2 = edge.getEndpoint2().getX();
+                int existingy1 = edge.getEndpoint1().getY();
+                int existingy2 = edge.getEndpoint2().getY();
+                if(intersection[0] < Math.min(x1, x2) || intersection[0] > Math.max(x1, x2))
                     ;
-                }else if(xIntercept <= Math.min(existingx2, existingx1) || xIntercept >= Math.max(existingx2, existingx1)){
+                else if(intersection[1] < Math.min(y1, y2) || intersection[1] > Math.max(y1, y2))
                     ;
-                }else if(vertices[(int)possibleEdges[i][0]] == listOfEdges.get(j).getEndpoint1() ||                     //These next two if statements just make sure the two edges don't share a vertex.
-                        vertices[(int)possibleEdges[i][0]] == listOfEdges.get(j).getEndpoint2()){
+                else if(intersection[0] < Math.min(existingx1, existingx2) || intersection[0] > Math.max(existingx1, existingx2))
                     ;
-                }else if(vertices[(int)possibleEdges[i][1]] == listOfEdges.get(j).getEndpoint1() ||
-                        vertices[(int)possibleEdges[i][1]] == listOfEdges.get(j).getEndpoint2()){
+                else if(intersection[1] < Math.min(existingy1, existingy2) || intersection[1] > Math.max(existingy1, existingy2))
                     ;
-                }else{
+                else if (temp.getEndpoint1() == edge.getEndpoint1() ||
+                        temp.getEndpoint1() == edge.getEndpoint2())
+                    ;
+                else if (temp.getEndpoint2() == edge.getEndpoint1() ||
+                        temp.getEndpoint2() == edge.getEndpoint2())
+                    ;
+                else {
                     possibleEdge = false;
                 }
             }
             if(possibleEdge){
-                Edge newEdge = new Edge(vertices[(int)possibleEdges[i][0]], vertices[(int)possibleEdges[i][1]]);
-                listOfEdges.add(newEdge);
+                listOfEdges.add(temp);
+                temp.addNeighbors();
             }
         }
         edges = listOfEdges.toArray(new Edge[listOfEdges.size()]);
@@ -114,8 +129,70 @@ public class Graph extends JFrame {
         }possibleEdges[iter+1] = newEdge;
     }
 
+
+    public void fixArray(double[][] array){
+        for(int i = 0; i < array.length; i+=2){
+            if(array[i][0] != array[i+1][1] || array[i][1] != array[i+1][0]){
+                for(int j = i+1; j < array.length; j++){
+                    if(array[j][0] == array[i][1] && array[j][1] == array[i][0]){
+                        double tempArray[] = array[i+1];
+                        array[i+1] = array[j];
+                        array[j] = tempArray;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
+    //finds reduced echelon form of a matrix to see where two edges intersect
+    public double[] edgeIntersection(Edge edge1, Edge edge2){
+        int lead = 0;
+        int columnCount = 3;
+        int rowcount = 2;
+        double matrix[][] = {{edge1.getA(), edge1.getB(), edge1.getC()}, {edge2.getA(), edge2.getB(), edge2.getC()}};
+
+        for(int r = 0; r < 2; r++){
+            if(columnCount <= lead){
+                break;
+            }
+            int i = r;
+            while(matrix[i][lead] == 0){
+                i++;
+                if (rowcount == i) {
+                    i = r;
+                    lead++;
+                    if(columnCount == lead){
+                        double sauce[] = {0.0, 0.0};
+                        return(sauce);                                                                                          //same line also this code never deals with parallel lines. How do they work?
+                    }
+                }
+            }
+            double[] tempRow = matrix[r];
+            matrix[r] = matrix[i];
+            matrix[i] = tempRow;
+            if(matrix[r][lead] != 0){
+                double val = matrix[r][lead];
+                for(int j = 0; j < columnCount; j++){
+                    matrix[r][j] = matrix[r][j] / val;
+                }
+            }
+            for(i = 0; i < rowcount; i++){
+                if(i != r){
+                    for(int j = columnCount - 1; j > -1; j--) {
+                        double subtractedNum = matrix[i][lead] * matrix[r][j];
+                        matrix[i][j] -= subtractedNum;
+                    }
+                }
+            }lead++;
+        }
+        double[] intersection = new double[2];
+        intersection[0] =-1 * matrix[0][columnCount-1];
+        intersection[1] =-1 * matrix[1][columnCount-1];
+        return intersection;
+    }
     public MyGraphics graphics(){
         return graphics;
     }
-
 }

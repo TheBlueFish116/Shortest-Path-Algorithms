@@ -6,11 +6,13 @@ public class Vertex {
     private List<Vertex> neighbors;
     private double dist = Double.POSITIVE_INFINITY;
     private Vertex pred;
+    private int id;
 
 
-    public Vertex(int xcor, int ycor){
-        x = xcor;
-        y = ycor;
+    public Vertex(int x, int y, int id){
+        this.x = x;
+        this.y = y;
+        this.id = id;
         neighbors = new ArrayList<Vertex>();
     }
 
@@ -44,5 +46,9 @@ public class Vertex {
 
     public int getY(){
         return y;
+    }
+
+    public int getId(){
+        return id;
     }
 }

@@ -3,7 +3,7 @@ import java.util.Random;
 public class Main {
 
     public static void main(String[] args) {
-        int numOfVertices = 15;
+        int numOfVertices = 20;
         Graph graph = new Graph(numOfVertices);
 
 

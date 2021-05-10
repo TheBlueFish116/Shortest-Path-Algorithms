@@ -11,9 +11,6 @@ public class MyGraphics extends JPanel{
     public MyGraphics(Vertex[] listOfVertices, Edge[] listOfEdges){
         vertices = listOfVertices;
         edges = listOfEdges;
-        if(edges == null){
-            System.out.println("HI");
-        }
     }
 
     public void paintComponent(Graphics g) {
