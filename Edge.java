@@ -6,8 +6,7 @@ public class Edge {
     private double B;
     private double C;
 
-    private int weight;
-    private boolean hasWeights = false;
+    private int weight = -1;
 
     public Edge(Vertex vertex1, Vertex vertex2){
         endpoint1 = vertex1;
@@ -19,8 +18,8 @@ public class Edge {
     }
 
     public void addNeighbors(){
-        endpoint1.addNeighbor(endpoint2);
-        endpoint2.addNeighbor(endpoint1);
+        endpoint1.addNeighbor(this);
+        endpoint2.addNeighbor(this);
     }
 
     public Vertex getEndpoint1(){
@@ -42,6 +41,16 @@ public class Edge {
     public double getC(){
         return C;
     }
+
+    public boolean hasWeight(){
+        if(weight == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public void setWeight(int weight){this.weight = weight;}
 
     public int getWeight(){
         return weight;

@@ -3,24 +3,25 @@ import java.util.*;
 public class Vertex {
     private int x;
     private int y;
-    private List<Vertex> neighbors;
+    private List<Edge> neighbors;
     private double dist = Double.POSITIVE_INFINITY;
     private Vertex pred;
     private int id;
+    private boolean wasVisited = false;
 
 
     public Vertex(int x, int y, int id){
         this.x = x;
         this.y = y;
         this.id = id;
-        neighbors = new ArrayList<Vertex>();
+        neighbors = new ArrayList<Edge>();
     }
 
-    public void addNeighbor(Vertex newNeighbor){
+    public void addNeighbor(Edge newNeighbor){
         neighbors.add(newNeighbor);
     }
 
-    public List<Vertex> getNeighbors(){
+    public List<Edge> getNeighbors(){
         return neighbors;
     }
 
@@ -42,6 +43,14 @@ public class Vertex {
 
     public int getX(){
         return x;
+    }
+
+    public boolean visited(){
+        return wasVisited;
+    }
+
+    public void visit(){
+        wasVisited = true;
     }
 
     public int getY(){

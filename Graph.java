@@ -118,7 +118,11 @@ public class Graph extends JFrame {
     }
 
     public void setWeights(){
-        ;
+        for(Edge edge: edges){
+            int distance = (int)Math.sqrt(Math.pow((edge.getEndpoint1().getX() - edge.getEndpoint2().getX()), 2) + Math.pow(edge.getEndpoint1().getY() - edge.getEndpoint2().getY(), 2));
+            distance = distance/10;
+            edge.setWeight(distance);
+        }
     }
 
     public void insertionSort(double[] newEdge, double[][] possibleEdges, int edgeNum){

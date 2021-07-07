@@ -9,12 +9,12 @@ public class Main {
 
         Vertex[] path = graph.getStartAndEnd();
 
-        //This is where you run the algorithms.
-        BreadthFirstSearch BFS = new BreadthFirstSearch(graph, path);
-        path = BFS.getPath();
+        //This is where you run the algorithms, comment out the algorithms you don't want to use.
+//        BreadthFirstSearch BFS = new BreadthFirstSearch(graph, path);
+        Dijkstra SearchAlgorithm = new Dijkstra(graph, path);
 
 
-
+        path = SearchAlgorithm.getPath();
         graph.graphics().setPath(path);
     }
 }

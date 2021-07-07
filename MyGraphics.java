@@ -19,6 +19,12 @@ public class MyGraphics extends JPanel{
         for(int i=0; i<edges.length; i++){
             g2d.setColor(Color.BLACK);
             g2d.drawLine(edges[i].getEndpoint1().getX(),edges[i].getEndpoint1().getY(), edges[i].getEndpoint2().getX(), edges[i].getEndpoint2().getY());
+            if(edges[i].hasWeight()){
+                String weight = ""+edges[i].getWeight()+"";
+                int midx = (edges[i].getEndpoint2().getX() + edges[i].getEndpoint1().getX())/2;
+                int midy = (edges[i].getEndpoint2().getY() + edges[i].getEndpoint1().getY())/2;
+                g2d.drawString(weight, midx, midy);
+            }
         }
         for(int i = 0; i < vertices.length; i++){
             g2d.setColor(Color.BLACK);
@@ -38,8 +44,8 @@ public class MyGraphics extends JPanel{
             g2d.setColor(Color.WHITE);
             g2d.fillOval(vertices[i].getX()-5,vertices[i].getY()-5,10,10);
             g2d.setColor(Color.BLUE);
-            String id = ""+i+"";
-            g2d.drawString(id,vertices[i].getX()-10,vertices[i].getY()-10);
+//            String id = ""+i+"";
+//            g2d.drawString(id,vertices[i].getX()-10,vertices[i].getY()-10);
         }
     }
 
