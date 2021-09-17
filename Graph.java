@@ -22,22 +22,15 @@ public class Graph extends JFrame {
         vertices = new Vertex[numOfVertices];
         Random rand = new Random();
         for (int i = 0; i < numOfVertices; i++) {
-//            if(i == 0){
-//                vertices[i] = new Vertex(20, 20, i);
-//            }else if(i == 1) {
-//                vertices[i] = new Vertex(20, 30, i);
-//            }else{
-                    int x = rand.nextInt(480) + 10;
-                    int y = rand.nextInt(480) + 10;
-                    vertices[i] = new Vertex(x, y, i);
-
-//            }
+            int x = rand.nextInt(480) + 10;
+            int y = rand.nextInt(480) + 10;
+            vertices[i] = new Vertex(x, y, i);
         }
     }
 
-    //This function makes sure that the graph has the most edges it can without two edges ever crossing each other.
-    //It does this by sorting every edge by distance then adding the shortest edges to the graph if they dont intersect any
-    //previous edges.
+    /*This function makes sure that the graph has the most edges it could without two edges ever crossing each other.
+    It does this by sorting every edge by distance then adding the shortest edges to the graph if they dont intersect any
+    previous edges.*/
     public void EdgeGeneration(){
         int edgeNum = -1;
         double[][] possibleEdges = new double[vertices.length * (vertices.length-1)][3];
@@ -53,11 +46,7 @@ public class Graph extends JFrame {
         }
         fixArray(possibleEdges);
         List<Edge> listOfEdges = new ArrayList<Edge>();
-        int debug = 0;
         for(int i=0; i<possibleEdges.length; i += 2){
-
-
-
             boolean possibleEdge = true;
             double x1 = vertices[(int)possibleEdges[i][0]].getX();
             double x2 = vertices[(int)possibleEdges[i][1]].getX();
@@ -125,6 +114,36 @@ public class Graph extends JFrame {
         }
     }
 
+    public void setDirections(Vertex[] pathEndpoints){
+        Vertex[] visited = new Vertex[vertices.length];
+        LinkedList<Vertex> queue = new LinkedList<Vertex>();
+        queue.add(pathEndpoints[0]);
+        Vertex current = pathEndpoints[0];
+        while(!queue.isEmpty()) {
+            current = queue.poll();
+            List<Edge> neighbors = current.getNeighbors();
+            for(Edge edge: neighbors){
+                Vertex neighbor;
+                if(edge.getEndpoint1() != current){
+                    neighbor = edge.getEndpoint1();
+                }else{
+                    neighbor = edge.getEndpoint2();
+                }
+                boolean nVisited = false;
+                for(Vertex vert : visited){
+                    if(neighbor == vert){
+                        nVisited = true;
+                    }
+                }
+                if(nVisited == false){
+                    edge.setDirection(neighbor);
+                    queue.add(neighbor);
+                }
+            }
+
+        }
+    }
+
     public void insertionSort(double[] newEdge, double[][] possibleEdges, int edgeNum){
         int iter = edgeNum-1;
         while(iter >=0 && possibleEdges[iter][2] > newEdge[2]){
@@ -169,7 +188,7 @@ public class Graph extends JFrame {
                     lead++;
                     if(columnCount == lead){
                         double sauce[] = {0.0, 0.0};
-                        return(sauce);                                                                                          //same line also this code never deals with parallel lines. How do they work?
+                        return(sauce);
                     }
                 }
             }
@@ -196,6 +215,15 @@ public class Graph extends JFrame {
         intersection[1] =-1 * matrix[1][columnCount-1];
         return intersection;
     }
+
+    public Vertex[] getVertices() {
+        return vertices;
+    }
+
+    public Edge[] getEdges() {
+        return edges;
+    }
+
     public MyGraphics graphics(){
         return graphics;
     }

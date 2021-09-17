@@ -43,13 +43,14 @@ public class MyGraphics extends JPanel{
             g2d.fillOval(vertices[i].getX()-10,vertices[i].getY()-10,20,20);
             g2d.setColor(Color.WHITE);
             g2d.fillOval(vertices[i].getX()-5,vertices[i].getY()-5,10,10);
-            g2d.setColor(Color.BLUE);
-//            String id = ""+i+"";
-//            g2d.drawString(id,vertices[i].getX()-10,vertices[i].getY()-10);
         }
     }
 
     public void setPath(Vertex pathList[]){
-        path = pathList;
+//        path = pathList;
+        path = new Vertex[pathList.length];
+        for(int i = 0; i < pathList.length; i++){
+            path[i] = pathList[i];
+        }
     }
 }

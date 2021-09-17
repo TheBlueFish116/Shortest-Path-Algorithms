@@ -1,4 +1,3 @@
-import javax.swing.text.AbstractDocument;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,7 +6,7 @@ public class Dijkstra {
     private Vertex[] shortestPath;
 
 
-    //Dijkstras algorithm is built off of BFS and the contructor function implements BFS to visit each node.
+    /*Dijkstra's algorithm is built off of BFS and the constructor function runs Dijkstra's algorithm.*/
     public Dijkstra(Graph graph, Vertex[] path){
         graph.setWeights();
         LinkedList<Vertex> queue = new LinkedList<Vertex>();
@@ -46,6 +45,8 @@ public class Dijkstra {
             }
 
         }
+
+        /*this just sets the path to the array that's going to be returned*/
         List<Vertex> tempPath = new ArrayList<Vertex>();
 
         current = path[1];

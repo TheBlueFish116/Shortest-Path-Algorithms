@@ -5,6 +5,7 @@ public class Edge {
     private double A;
     private double B;
     private double C;
+    private boolean directed = false;
 
     private int weight = -1;
 
@@ -54,5 +55,13 @@ public class Edge {
 
     public int getWeight(){
         return weight;
+    }
+
+    public boolean hasDirection(){
+        return directed;
+    }
+
+    public void setDirection(Vertex destination){
+
     }
 }
