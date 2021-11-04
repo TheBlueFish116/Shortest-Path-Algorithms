@@ -21,11 +21,31 @@ public class Graph extends JFrame {
     public void vertexGeneration(int numOfVertices) {
         vertices = new Vertex[numOfVertices];
         Random rand = new Random();
-        for (int i = 0; i < numOfVertices; i++) {
-            int x = rand.nextInt(480) + 10;
-            int y = rand.nextInt(480) + 10;
-            vertices[i] = new Vertex(x, y, i);
+        int x = rand.nextInt(480) + 10;
+        int y = rand.nextInt(480) + 10;
+        vertices[0] = new Vertex(x, y, 0);
+        int vertexNum = 1;
+        for (int i = 1; i < numOfVertices; i++) {
+            Boolean tooClose = false;
+            x = rand.nextInt(480) + 10;
+            y = rand.nextInt(480) + 10;
+            for (int j = 0; j < vertexNum; j++){
+                double distance = Math.sqrt(Math.pow((vertices[j].getX() - x), 2) + Math.pow(vertices[j].getY() - y, 2));
+                if(distance < 70){
+                    i -= 1;
+                    tooClose = true;
+                    break;
+                }
+            }if(!tooClose){
+                vertices[i] = new Vertex(x, y, i);
+                vertexNum += 1;
+            }
         }
+                                                                                                                                            //delete this V
+//        vertices[0] = new Vertex(100, 160, 0);
+//        vertices[1] = new Vertex(100, 220, 1);
+//        vertices[2] = new Vertex(50, 180, 2);
+//        vertices[3] = new Vertex(135, 180, 3);
     }
 
     /*This function makes sure that the graph has the most edges it could without two edges ever crossing each other.
@@ -86,21 +106,21 @@ public class Graph extends JFrame {
     }
 
 
-    //This gets the leftmost and rightmost vertex to make the paths more interesting
+    //This gets the two vertices that are the farthest apart to make the graph more interesting
     public Vertex[] getStartAndEnd(){
         Vertex[] pathEndpoints = new Vertex[2];
         Vertex start, end;
-        int i = 0;
-        start = vertices[i];
-        end = vertices[i];
-        i++;
-        while(i < vertices.length){
-            if(start.getX() > vertices[i].getX()){
-                start = vertices[i];
-            }else if(end.getX() < vertices[i].getX()){
-                end = vertices[i];
-            }i++;
-        }
+//        int i = 0;
+//        start = vertices[i];
+//        end = vertices[i];
+//        i++;
+//        while(i < vertices.length){
+//            if(start.getX() > vertices[i].getX()){
+//                start = vertices[i];
+//            }else if(end.getX() < vertices[i].getX()){
+//                end = vertices[i];
+//            }i++;
+//        }
         pathEndpoints[0] = start;
         pathEndpoints[1] = end;
         return pathEndpoints;
@@ -109,7 +129,7 @@ public class Graph extends JFrame {
     public void setWeights(){
         for(Edge edge: edges){
             int distance = (int)Math.sqrt(Math.pow((edge.getEndpoint1().getX() - edge.getEndpoint2().getX()), 2) + Math.pow(edge.getEndpoint1().getY() - edge.getEndpoint2().getY(), 2));
-            distance = distance/10;
+            distance = distance/2;
             edge.setWeight(distance);
         }
     }

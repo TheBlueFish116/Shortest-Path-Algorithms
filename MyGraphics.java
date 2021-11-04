@@ -23,7 +23,7 @@ public class MyGraphics extends JPanel{
                 String weight = ""+edges[i].getWeight()+"";
                 int midx = (edges[i].getEndpoint2().getX() + edges[i].getEndpoint1().getX())/2;
                 int midy = (edges[i].getEndpoint2().getY() + edges[i].getEndpoint1().getY())/2;
-                g2d.drawString(weight, midx, midy);
+                g2d.drawString(weight, midx+1, midy);
             }
         }
         for(int i = 0; i < vertices.length; i++){
